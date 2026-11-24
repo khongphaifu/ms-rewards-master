@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Microsoft Rewards Master</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-group">
+        <div class="logo-icon"></div>
+        <div>
+          <h1 class="title">MS Rewards Master</h1>
+          <p class="subtitle">Tùy Chọn Tác Vụ Độc Lập</p>
+        </div>
+      </div>
+      <div id="status-badge" class="status-badge idle">Sẵn sàng</div>
+    </header>
+
+    <!-- Thẻ hiển thị điểm thưởng Microsoft Rewards thực tế -->
+    <div class="score-card">
+      <div class="score-header">
+        <div class="score-title">
+          <span>⭐ Điểm Rewards:</span>
+          <strong id="score-total" class="score-value">Đang tải...</strong>
+        </div>
+        <button id="btn-refresh-score" class="btn-refresh" title="Làm mới điểm">🔄</button>
+      </div>
+      <div class="score-details">
+        <div class="score-pill">
+          <span class="pill-label">💻 Web PC:</span>
+          <span id="score-pc" class="pill-value">--/--</span>
+        </div>
+        <div class="score-pill">
+          <span class="pill-label">📱 App Mobile:</span>
+          <span id="score-mobile" class="pill-value">--/--</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Khung thông báo nhắc nhở kiểm tra quest mỗi 10 phút -->
+    <div id="check-alert-banner" class="alert-banner" style="display: none;">
+      <div class="alert-content">
+        <span class="alert-icon">🔔</span>
+        <div class="alert-text">
+          <strong id="alert-title">Đã treo được 10 phút!</strong>
+          <p id="alert-desc">Hãy mở app/web kiểm tra quest xem thời gian đã tăng chưa nhé.</p>
+        </div>
+      </div>
+      <button id="btn-dismiss-alert" class="btn btn-alert">✅ Đã kiểm tra (Tiếp tục)</button>
+    </div>
+
+    <!-- Danh sách lựa chọn tác vụ -->
+    <div class="tasks-card">
+      <div class="card-title">Chọn các việc bạn muốn thực hiện:</div>
+
+      <!-- Task 0: Điểm danh App Bing -->
+      <label class="task-checkbox-row">
+        <div class="task-left">
+          <input type="checkbox" id="chk-daily-checkin" class="task-checkbox" checked>
+          <div class="task-label-group">
+            <span class="task-name">📅 Điểm danh App Bing (7 ngày & Streak)</span>
+            <span id="txt-checkin-status" class="task-desc">Sẵn sàng điểm danh</span>
+          </div>
+        </div>
+        <div id="icon-checkin" class="status-indicator pending">⏳</div>
+      </label>
+
+      <!-- Task 0.2: Làm Quest Hàng Ngày (Daily Set, Quiz, Poll) -->
+      <label class="task-checkbox-row">
+        <div class="task-left">
+          <input type="checkbox" id="chk-daily-quests" class="task-checkbox" checked>
+          <div class="task-label-group">
+            <span class="task-name">🎯 Làm Quest Hàng Ngày (Daily Set, Quiz, Poll)</span>
+            <span id="txt-quests-status" class="task-desc">Sẵn sàng làm quest</span>
+          </div>
+        </div>
+        <div id="icon-quests" class="status-indicator pending">⏳</div>
+      </label>
+
+      <!-- Task 0.5: Visual Search Streak -->
+      <label class="task-checkbox-row">
+        <div class="task-left">
+          <input type="checkbox" id="chk-visual-search" class="task-checkbox" checked>
+          <div class="task-label-group">
+            <span class="task-name">📷 Visual Search Streak (Tìm kiếm hình ảnh)</span>
+            <span id="txt-visual-status" class="task-desc">Tự động hoàn thành streak</span>
+          </div>
+        </div>
+        <div id="icon-visual" class="status-indicator pending">⏳</div>
+      </label>
+
+      <!-- Task 1: Tìm kiếm Web PC -->
+      <label class="task-checkbox-row">
+        <div class="task-left">
+          <input type="checkbox" id="chk-pc-search" class="task-checkbox" checked>
+          <div class="task-label-group">
+            <span class="task-name">💻 Tìm kiếm Web PC (Bing PC)</span>
+            <span id="txt-pc-progress" class="task-desc">0 / 30 lượt</span>
+          </div>
+        </div>
+        <div id="icon-pc" class="status-indicator pending">⏳</div>
+      </label>
+
+      <!-- Task 2: Tìm kiếm App Mobile -->
+      <label class="task-checkbox-row">
+        <div class="task-left">
+          <input type="checkbox" id="chk-mobile-search" class="task-checkbox" checked>
+          <div class="task-label-group">
+            <span class="task-name">📱 Tìm kiếm App / Mobile (Android Edge)</span>
+            <span id="txt-mobile-progress" class="task-desc">0 / 20 lượt</span>
+          </div>
+        </div>
+        <div id="icon-mobile" class="status-indicator pending">⏳</div>
+      </label>
+
+      <!-- Task 3: Đọc báo MSN -->
+      <label class="task-checkbox-row">
+        <div class="task-left">
+          <input type="checkbox" id="chk-read-msn" class="task-checkbox" checked>
+          <div class="task-label-group">
+            <span class="task-name">📰 Đọc báo MSN News (Read to Earn)</span>
+            <span id="txt-read-progress" class="task-desc">0 / 10 bài</span>
+          </div>
+        </div>
+        <div id="icon-read" class="status-indicator pending">⏳</div>
+      </label>
+
+      <!-- Task 4: Treo máy -->
+      <label class="task-checkbox-row">
+        <div class="task-left">
+          <input type="checkbox" id="chk-stay-alive" class="task-checkbox" checked>
+          <div class="task-label-group">
+            <span class="task-name">☕ Treo máy 30p duyệt Edge (Zero-Window API)</span>
+            <span id="txt-stay-timer" class="task-desc">30:00 còn lại (Chạy ngầm 100%, hỗ trợ thu nhỏ Edge)</span>
+          </div>
+        </div>
+        <div id="icon-stay" class="status-indicator pending">⏳</div>
+      </label>
+    </div>
+
+    <!-- Nút điều khiển chính -->
+    <div class="controls-card">
+      <button id="btn-start-selected" class="btn btn-primary">
+        <span class="btn-icon">▶</span> Bắt Đầu Các Mục Đã Chọn
+      </button>
+      <button id="btn-stop" class="btn btn-danger" disabled>
+        <span class="btn-icon">⏹</span> Dừng Lại
+      </button>
+
+      <div class="quick-actions-title">Hoặc chạy nhanh từng mục riêng lẻ:</div>
+      <div class="quick-actions">
+        <button id="btn-run-checkin" class="btn btn-sm">📅 Điểm danh</button>
+        <button id="btn-run-quests" class="btn btn-sm">🎯 Làm Quest</button>
+        <button id="btn-run-visual" class="btn btn-sm">📷 Visual Streak</button>
+        <button id="btn-run-pc" class="btn btn-sm">💻 Web Search</button>
+        <button id="btn-run-mobile" class="btn btn-sm">📱 Mobile</button>
+        <button id="btn-run-read" class="btn btn-sm">📰 Đọc MSN</button>
+        <button id="btn-run-stay" class="btn btn-sm">☕ Treo máy</button>
+        <button id="btn-open-visual" class="btn btn-sm" title="Mở trang Bing Visual Search">🔍 Mở Visual</button>
+      </div>
+    </div>
+
+    <!-- Live Logs -->
+    <div class="logs-card">
+      <div class="logs-header">
+        <span class="card-title">Nhật ký hoạt động thời gian thực</span>
+        <div class="logs-actions">
+          <button id="btn-copy-logs" class="btn-link">📋 Copy log</button>
+          <button id="btn-clear-logs" class="btn-link">Xóa log</button>
+        </div>
+      </div>
+      <div id="logs-container" class="logs-box">
+        <div class="log-entry">[Sẵn sàng] Chọn các mục bên trên và bấm "Bắt Đầu".</div>
+      </div>
+    </div>
+
+    <!-- Cài đặt nâng cao -->
+    <div class="settings-card">
+      <details>
+        <summary class="settings-summary">⚙️ Tùy chỉnh số lượng & thời gian</summary>
+        <div class="settings-body">
+          <div class="setting-row-inline">
+            <span>Số lượt tìm kiếm Web PC:</span>
+            <input type="number" id="input-pc-count" min="1" max="60" value="35">
+          </div>
+          <div class="setting-row-inline">
+            <span>Số lượt tìm kiếm App Mobile:</span>
+            <input type="number" id="input-mobile-count" min="1" max="60" value="25">
+          </div>
+          <div class="setting-row-inline">
+            <span>Số bài báo MSN cần đọc:</span>
+            <input type="number" id="input-read-count" min="1" max="30" value="10">
+          </div>
+          <div class="setting-row-inline">
+            <span>Thời gian treo máy (phút):</span>
+            <input type="number" id="input-stay-minutes" min="10" max="120" value="30">
+          </div>
+          <div class="setting-row-inline">
+            <span>Delay tìm kiếm (giây):</span>
+            <div class="delay-inputs">
+              <input type="number" id="input-min-delay" min="1" max="30" step="0.5" value="2.5">
+              <span>-</span>
+              <input type="number" id="input-max-delay" min="2" max="60" step="0.5" value="4.5">
+            </div>
+          </div>
+          <div class="setting-row-inline">
+            <span>⚡ Chạy tiếp kể cả khi chưa rõ hạn mức điểm:</span>
+            <input type="checkbox" id="chk-force-count" style="width: 18px; height: 18px; cursor: pointer;">
+          </div>
+          <div class="setting-row-inline">
+            <span>🛡️ Chống ngủ đông khi thu nhỏ Edge:</span>
+            <input type="checkbox" id="chk-prevent-sleeping" checked style="width: 18px; height: 18px; cursor: pointer;">
+          </div>
+          <div class="setting-row-inline">
+            <span>Tự nghỉ ngắn khi dính Cooldown:</span>
+            <input type="checkbox" id="chk-cooldown-safe" style="width: 18px; height: 18px; cursor: pointer;">
+          </div>
+          <div class="setting-row-inline">
+            <span>Thời gian nghỉ Cooldown (phút):</span>
+            <input type="number" id="input-cooldown-rest" min="1" max="15" value="1">
+          </div>
+          <div class="setting-row-inline">
+            <span>⚡ Tự động chạy khi mở Edge:</span>
+            <input type="checkbox" id="chk-auto-start" style="width: 18px; height: 18px; cursor: pointer;">
+          </div>
+          <div class="setting-row-inline">
+            <span>📌 Ghim tab treo máy (Pinned tab):</span>
+            <input type="checkbox" id="chk-pin-tab" checked style="width: 18px; height: 18px; cursor: pointer;">
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

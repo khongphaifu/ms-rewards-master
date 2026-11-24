@@ -1,0 +1,16 @@
+# Packaged archives (attached via GitHub Releases instead)
+*.zip
+
+# Local workspace scratch files
+clean_doc.py
+clean_doc.txt
+screen.png
+screenshot.ps1
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.log

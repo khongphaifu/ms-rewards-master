@@ -1,0 +1,57 @@
+{
+  "manifest_version": 3,
+  "name": "Microsoft Rewards Master - Tùy Chọn Tác Vụ",
+  "version": "2.5.0",
+  "description": "Microsoft Rewards Master v2.5.0: Mobile Search Silent Direct API Zero-Window (IsMobileClient=true) + 3 tầng Tab dự phòng, khử trùng lặp bộ đếm 60/90 pts, chống treo debugger 32s, Daily Set /earn RSC 3/3, Treo máy 30p ngầm.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Microsoft Rewards Master",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": [
+    "storage",
+    "alarms",
+    "tabs",
+    "windows",
+    "notifications",
+    "declarativeNetRequest",
+    "debugger",
+    "webNavigation",
+    "scripting",
+    "power",
+    "cookies"
+  ],
+  "host_permissions": [
+    "*://*.bing.com/*",
+    "*://*.msn.com/*",
+    "*://*.live.com/*",
+    "*://*.microsoft.com/*",
+    "*://*.microsoftonline.com/*",
+    "*://prod.rewardsplatform.microsoft.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://*.msn.com/*"],
+      "js": ["content/stay-alive.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["*://*.bing.com/*"],
+      "js": ["content/search-automator.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
